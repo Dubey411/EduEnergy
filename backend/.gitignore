@@ -1,0 +1,71 @@
+# --- Python & Flask ---
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environment folders
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+venv.bak/
+
+# --- IDE & Editor settings ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- Logs & temporary files ---
+*.log
+logs/
+*.pid
+*.seed
+*.bak
+*.tmp
+
+# --- OS generated files ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# --- Cache & compiled files ---
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.cache/
+.mypy_cache/
+.pyre/
+.pytype/
+
+# --- Model & Data files (keep private) ---
+models/
+data/
+*.pkl
+*.h5
+*.csv
+*.xlsx
+*.npy
+*.npz
+
+# --- Environment variables & secrets ---
+.env
+*.env
+config.json
+secrets.json
+
+# --- Build & dist files ---
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Misc ---
+*.swp
+*.swo
