@@ -285,7 +285,7 @@ Full-Stack Developer | AI/ML Enthusiast | MERN Stack
 
 📧 Email: [shubh6949@gmail.com](mailto:shubh6949@gmail.com)  
 🔗 GitHub: [@Dubey411](https://github.com/Dubey411)  
-💼 LinkedIn: [Connect with me](https://linkedin.com/in/shubham-dubey)
+💼 LinkedIn: [Connect with me](https://www.linkedin.com/in/shubham-dubey-1a0293352/)
 
 ---
 
