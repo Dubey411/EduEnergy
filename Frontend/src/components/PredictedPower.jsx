@@ -31,36 +31,34 @@ export default function SolarDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  const API_BASE =
-    import.meta.env.MODE === "development"
-      ? "http://localhost:5000"
-      : "https://eduenergy-2.onrender.com";
-
   const handlePredict = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(`${API_BASE}/api/predict/manual`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ambient_temp: ambient,
-          module_temp: moduleTemp,
-          irradiation: irradiation,
-        }),
-      });
+  setIsLoading(true);
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/predict/manual`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ambient_temp: ambient,
+        module_temp: moduleTemp,
+        irradiation: irradiation,
+      }),
+    });
 
-      const result = await res.json();
+    const text = await res.text(); // 👈 read as text first
+    console.log("Backend response:", text);
 
-      setData(result.predictions);
-      setEfficiency(result.system_efficiency);
-      setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
-      setShowResults(true);
-    } catch (error) {
-      console.error("Prediction failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const result = JSON.parse(text); // try parse manually
+    setData(result.predictions);
+    setEfficiency(result.system_efficiency);
+    setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
+    setShowResults(true);
+  } catch (error) {
+    console.error("Prediction failed:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   // const handlePredict = async () => {
   //   setIsLoading(true);
