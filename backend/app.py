@@ -1,7 +1,4 @@
 
-
-
-
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
@@ -11,9 +8,17 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:5173",  # for local testing
+            "https://edu-energy.vercel.app/"  # your Vercel URL
+        ]
+    }
+})
 
-# ✅ 1. API for live data prediction (optional)
+
+
 @app.route('/api/predict', methods=['GET'])
 def predict_solar_power():
     try:
@@ -45,7 +50,7 @@ def predict_solar_power():
         return jsonify({"error": str(e)})
 
 
-# ✅ 2. API for manual input and hourly predictions
+
 @app.route('/api/predict/manual', methods=['POST'])
 def manual_prediction():
     try:
@@ -58,7 +63,7 @@ def manual_prediction():
         hourly_predictions = []
         for h in [8, 10, 12, 14, 16, 18]:
             predicted = base_power * (0.6 + 0.1 * (h % 5))
-            actual = predicted * (0.9 + 0.05 * ((h % 3) - 1))  # simulate real data
+            actual = predicted * (0.9 + 0.05 * ((h % 3) - 1))  
             eff = (predicted / (irr * 0.01)) * 100
             hourly_predictions.append({
                 "hour": h,

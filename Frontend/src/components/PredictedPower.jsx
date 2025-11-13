@@ -1,6 +1,24 @@
 import { useState } from "react";
-import { LineChart, Line, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { Sun, Zap, Target, Download, TrendingUp, Thermometer } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  Sun,
+  Zap,
+  Target,
+  Download,
+  TrendingUp,
+  Thermometer,
+} from "lucide-react";
 import Papa from "papaparse";
 
 export default function SolarDashboard() {
@@ -13,10 +31,15 @@ export default function SolarDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
+  const API_BASE =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:5000"
+      : "https://eduenergy-2.onrender.com";
+
   const handlePredict = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/predict/manual", {
+      const res = await fetch(`${API_BASE}/api/predict/manual`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -25,6 +48,7 @@ export default function SolarDashboard() {
           irradiation: irradiation,
         }),
       });
+
       const result = await res.json();
 
       setData(result.predictions);
@@ -37,6 +61,33 @@ export default function SolarDashboard() {
       setIsLoading(false);
     }
   };
+
+  // const handlePredict = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     // const res = await fetch("http://localhost:5000/api/predict/manual", {
+  //     const res = await fetch("https://eduenergy-backend.onrender.com/api/predict/manual", {
+
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         ambient_temp: ambient,
+  //         module_temp: moduleTemp,
+  //         irradiation: irradiation,
+  //       }),
+  //     });
+  //     const result = await res.json();
+
+  //     setData(result.predictions);
+  //     setEfficiency(result.system_efficiency);
+  //     setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
+  //     setShowResults(true);
+  //   } catch (error) {
+  //     console.error("Prediction failed:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleDownloadCSV = () => {
     if (!data.length) return;
@@ -78,7 +129,7 @@ export default function SolarDashboard() {
               <TrendingUp className="w-6 h-6 text-orange-500" />
               Input Parameters
             </h2>
-            
+
             <div className="space-y-4">
               <div className="group">
                 <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
@@ -152,8 +203,12 @@ export default function SolarDashboard() {
                   <Sun className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Irradiation</p>
-                  <p className="text-3xl font-black text-gray-800">{irradiation}</p>
+                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                    Irradiation
+                  </p>
+                  <p className="text-3xl font-black text-gray-800">
+                    {irradiation}
+                  </p>
                   <p className="text-xs text-gray-500 font-medium">W/m²</p>
                 </div>
               </div>
@@ -165,8 +220,12 @@ export default function SolarDashboard() {
                   <Zap className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Predicted Power</p>
-                  <p className="text-3xl font-black text-gray-800">{predictedPower}</p>
+                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                    Predicted Power
+                  </p>
+                  <p className="text-3xl font-black text-gray-800">
+                    {predictedPower}
+                  </p>
                   <p className="text-xs text-gray-500 font-medium">kW</p>
                 </div>
               </div>
@@ -178,8 +237,12 @@ export default function SolarDashboard() {
                   <Target className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">System Efficiency</p>
-                  <p className="text-3xl font-black text-gray-800">{efficiency}</p>
+                  <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                    System Efficiency
+                  </p>
+                  <p className="text-3xl font-black text-gray-800">
+                    {efficiency}
+                  </p>
                   <p className="text-xs text-gray-500 font-medium">%</p>
                 </div>
               </div>
@@ -200,22 +263,37 @@ export default function SolarDashboard() {
                 <BarChart data={data}>
                   <defs>
                     <linearGradient id="colorPower" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                      <stop
+                        offset="95%"
+                        stopColor="#10b981"
+                        stopOpacity={0.3}
+                      />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="hour" stroke="#6b7280" style={{ fontSize: '12px', fontWeight: 600 }} />
-                  <YAxis stroke="#6b7280" style={{ fontSize: '12px', fontWeight: 600 }} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                      border: '2px solid #10b981',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                    }} 
+                  <XAxis
+                    dataKey="hour"
+                    stroke="#6b7280"
+                    style={{ fontSize: "12px", fontWeight: 600 }}
                   />
-                  <Bar dataKey="predicted_power" fill="url(#colorPower)" radius={[8, 8, 0, 0]} />
+                  <YAxis
+                    stroke="#6b7280"
+                    style={{ fontSize: "12px", fontWeight: 600 }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "2px solid #10b981",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                    }}
+                  />
+                  <Bar
+                    dataKey="predicted_power"
+                    fill="url(#colorPower)"
+                    radius={[8, 8, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -229,32 +307,41 @@ export default function SolarDashboard() {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="hour" stroke="#6b7280" style={{ fontSize: '12px', fontWeight: 600 }} />
-                  <YAxis stroke="#6b7280" style={{ fontSize: '12px', fontWeight: 600 }} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                      border: '2px solid #f97316',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                    }} 
+                  <XAxis
+                    dataKey="hour"
+                    stroke="#6b7280"
+                    style={{ fontSize: "12px", fontWeight: 600 }}
                   />
-                  <Legend wrapperStyle={{ fontSize: '14px', fontWeight: 600 }} />
-                  <Line 
-                    type="monotone" 
-                    dataKey="predicted_power" 
-                    stroke="#10b981" 
+                  <YAxis
+                    stroke="#6b7280"
+                    style={{ fontSize: "12px", fontWeight: 600 }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "2px solid #f97316",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                    }}
+                  />
+                  <Legend
+                    wrapperStyle={{ fontSize: "14px", fontWeight: 600 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="predicted_power"
+                    stroke="#10b981"
                     strokeWidth={3}
                     name="Predicted Power"
-                    dot={{ fill: '#10b981', r: 4 }}
+                    dot={{ fill: "#10b981", r: 4 }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="actual_power" 
-                    stroke="#ef4444" 
+                  <Line
+                    type="monotone"
+                    dataKey="actual_power"
+                    stroke="#ef4444"
                     strokeWidth={3}
                     name="Historical Power"
-                    dot={{ fill: '#ef4444', r: 4 }}
+                    dot={{ fill: "#ef4444", r: 4 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -269,46 +356,60 @@ export default function SolarDashboard() {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="hour" stroke="#6b7280" style={{ fontSize: '12px', fontWeight: 600 }} />
-                  <YAxis 
-                    yAxisId="left" 
-                    stroke="#6b7280" 
-                    style={{ fontSize: '12px', fontWeight: 600 }}
-                    label={{ value: "Temp (°C)", angle: -90, position: "insideLeft" }} 
-                  />
-                  <YAxis 
-                    yAxisId="right" 
-                    orientation="right" 
+                  <XAxis
+                    dataKey="hour"
                     stroke="#6b7280"
-                    style={{ fontSize: '12px', fontWeight: 600 }}
-                    label={{ value: "Efficiency (%)", angle: 90, position: "insideRight" }} 
+                    style={{ fontSize: "12px", fontWeight: 600 }}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                      border: '2px solid #3b82f6',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                    }} 
+                  <YAxis
+                    yAxisId="left"
+                    stroke="#6b7280"
+                    style={{ fontSize: "12px", fontWeight: 600 }}
+                    label={{
+                      value: "Temp (°C)",
+                      angle: -90,
+                      position: "insideLeft",
+                    }}
                   />
-                  <Legend wrapperStyle={{ fontSize: '14px', fontWeight: 600 }} />
-                  <Line 
-                    yAxisId="left" 
-                    type="monotone" 
-                    dataKey="module_temp" 
-                    stroke="#3b82f6" 
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    stroke="#6b7280"
+                    style={{ fontSize: "12px", fontWeight: 600 }}
+                    label={{
+                      value: "Efficiency (%)",
+                      angle: 90,
+                      position: "insideRight",
+                    }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "2px solid #3b82f6",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                    }}
+                  />
+                  <Legend
+                    wrapperStyle={{ fontSize: "14px", fontWeight: 600 }}
+                  />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="module_temp"
+                    stroke="#3b82f6"
                     strokeWidth={3}
                     name="Temperature"
-                    dot={{ fill: '#3b82f6', r: 4 }}
+                    dot={{ fill: "#3b82f6", r: 4 }}
                   />
-                  <Line 
-                    yAxisId="right" 
-                    type="monotone" 
-                    dataKey="efficiency" 
-                    stroke="#f59e0b" 
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="efficiency"
+                    stroke="#f59e0b"
                     strokeWidth={3}
                     name="Efficiency"
-                    dot={{ fill: '#f59e0b', r: 4 }}
+                    dot={{ fill: "#f59e0b", r: 4 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -330,16 +431,32 @@ export default function SolarDashboard() {
 
       <style jsx>{`
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         @keyframes slideUp {
-          from { opacity: 0; transform: translateY(40px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
         }
         .animate-fadeIn {
           animation: fadeIn 0.8s ease-out;
