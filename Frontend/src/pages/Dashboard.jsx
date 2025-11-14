@@ -31,10 +31,12 @@ export default function SolarDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
+ 
+
   const handlePredict = async () => {
     setIsLoading(true);
     try {
-      const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/predict/manual`;
+       const apiUrl = "https://eduenergy-2.onrender.com/api/predict/manual";
       console.log("Calling API:", apiUrl); // check the URL
 
       const res = await fetch(apiUrl, {
