@@ -31,18 +31,52 @@ export default function SolarDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
+  const handlePredict = async () => {
+    setIsLoading(true);
+    try {
+      const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/predict/manual`;
+      console.log("Calling API:", apiUrl); // check the URL
+
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ambient_temp: ambient,
+          module_temp: moduleTemp,
+          irradiation: irradiation,
+        }),
+      });
+
+      const result = await res.json();
+      console.log("API response:", result);
+
+      setData(result.predictions);
+      setEfficiency(result.system_efficiency);
+      setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
+      setShowResults(true);
+    } catch (error) {
+      console.error("Prediction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // const handlePredict = async () => {
   //   setIsLoading(true);
   //   try {
-  //     const res = await fetch("http://localhost:5000/api/predict/manual", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         ambient_temp: ambient,
-  //         module_temp: moduleTemp,
-  //         irradiation: irradiation,
-  //       }),
-  //     });
+  //     const res = await fetch(
+  //       `${import.meta.env.VITE_API_BASE_URL}/api/predict/manual`,
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           ambient_temp: ambient,
+  //           module_temp: moduleTemp,
+  //           irradiation: irradiation,
+  //         }),
+  //       }
+  //     );
+
   //     const result = await res.json();
 
   //     setData(result.predictions);
@@ -55,35 +89,6 @@ export default function SolarDashboard() {
   //     setIsLoading(false);
   //   }
   // };
-
-  const handlePredict = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/predict/manual`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ambient_temp: ambient,
-            module_temp: moduleTemp,
-            irradiation: irradiation,
-          }),
-        }
-      );
-
-      const result = await res.json();
-
-      setData(result.predictions);
-      setEfficiency(result.system_efficiency);
-      setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
-      setShowResults(true);
-    } catch (error) {
-      console.error("Prediction failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleDownloadCSV = () => {
     if (!data.length) return;
