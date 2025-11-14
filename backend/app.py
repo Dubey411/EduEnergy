@@ -18,7 +18,6 @@ CORS(app, resources={
 })
 
 
-
 @app.route('/api/predict', methods=['GET'])
 def predict_solar_power():
     try:

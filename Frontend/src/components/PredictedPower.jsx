@@ -31,61 +31,33 @@ export default function SolarDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
+ 
   const handlePredict = async () => {
-  setIsLoading(true);
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/predict/manual`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ambient_temp: ambient,
-        module_temp: moduleTemp,
-        irradiation: irradiation,
-      }),
-    });
+    setIsLoading(true);
+    try {
+      // const res = await fetch("http://localhost:5000/api/predict/manual", {
+      const res = await fetch("https://eduenergy-2.onrender.com/api/predict/manual", {
 
-    const text = await res.text(); // 👈 read as text first
-    console.log("Backend response:", text);
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ambient_temp: ambient,
+          module_temp: moduleTemp,
+          irradiation: irradiation,
+        }),
+      });
+      const result = await res.json();
 
-    const result = JSON.parse(text); // try parse manually
-    setData(result.predictions);
-    setEfficiency(result.system_efficiency);
-    setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
-    setShowResults(true);
-  } catch (error) {
-    console.error("Prediction failed:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-  // const handlePredict = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     // const res = await fetch("http://localhost:5000/api/predict/manual", {
-  //     const res = await fetch("https://eduenergy-backend.onrender.com/api/predict/manual", {
-
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         ambient_temp: ambient,
-  //         module_temp: moduleTemp,
-  //         irradiation: irradiation,
-  //       }),
-  //     });
-  //     const result = await res.json();
-
-  //     setData(result.predictions);
-  //     setEfficiency(result.system_efficiency);
-  //     setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
-  //     setShowResults(true);
-  //   } catch (error) {
-  //     console.error("Prediction failed:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+      setData(result.predictions);
+      setEfficiency(result.system_efficiency);
+      setPredictedPower(result.predictions?.[0]?.predicted_power?.toFixed(2));
+      setShowResults(true);
+    } catch (error) {
+      console.error("Prediction failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleDownloadCSV = () => {
     if (!data.length) return;
