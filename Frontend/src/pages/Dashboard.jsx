@@ -117,7 +117,7 @@ export default function SolarDashboard() {
           <div className="inline-flex items-center justify-center gap-3 mb-3">
             <Sun className="w-14 h-14 text-orange-500 animate-spin-slow" />
             <h1 className="text-5xl font-black bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
-              Solar AI Forecast
+              Solar Forecast
             </h1>
           </div>
           <p className="text-lg text-gray-600 font-medium">
